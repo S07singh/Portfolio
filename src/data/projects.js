@@ -1,6 +1,20 @@
 export const projects = [
   {
     id: 1,
+    date: "May 2026",
+    title: "  Smart-Motorcycle-Traffic-Violation-Detection-System",
+    shortDescription:
+      "AI-powered traffic violation detection using dual YOLOv8 models and OCR. This system detects helmet violations, per-motorcycle triple riding, and extracts license plate numbers from images and videos through a professional Streamlit web interface.",
+    thumbnail: "/images/project/Motorcycle.png",
+    tags: ["Machine Learning", "Computer Vision", "YOLOv8"],
+    techstack: ["Python", "OCR", "YOLOv8", "Computer vision"],
+    live: "https://smart-motorcycle-traffic-violation-detection-system-heph6fxpyd.streamlit.app/",
+    repo: "https://github.com/S07singh/Smart-Motorcycle-Traffic-Violation-Detection-System",
+    video: "",
+    featured: true,
+  },
+    {
+    id: 1,
     date: "January 2026",
     title: "Stock Price Movement Classification (NSE)",
     shortDescription:
