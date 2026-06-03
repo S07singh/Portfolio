@@ -14,7 +14,7 @@ export const projects = [
     featured: true,
   },
     {
-    id: 1,
+    id: 2,
     date: "January 2026",
     title: "Stock Price Movement Classification (NSE)",
     shortDescription:
@@ -28,7 +28,7 @@ export const projects = [
     featured: true,
   },
     {
-    id: 2,
+    id: 3,
     date: "January 2026",
     title: "Electricity Consumption Prediction Based on Weather",
     shortDescription:
@@ -42,7 +42,7 @@ export const projects = [
     featured: true,
   },
     {
-    id: 3,
+    id: 4,
     date: "December 2025",
     title: "Credit Card Fraud Detection",
     shortDescription:
@@ -56,7 +56,7 @@ export const projects = [
     featured: true,
   },
    {
-    id: 4,
+    id: 5,
     date: "December 2025",
     title: "Customer Churn Prediction",
     shortDescription:
@@ -70,7 +70,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 5,
+    id: 6,
     date: "October 2025",
     title: "Chatbot with LangGraph",
     shortDescription:
@@ -84,7 +84,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 6,
+    id: 7,
     date: "September 2025",
     title: "YouTube Video Summarizer",
     shortDescription:
@@ -98,7 +98,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 7,
+    id: 8,
     date: "December 2025",
     title: "Dataset Analyzer",
     shortDescription:
@@ -112,7 +112,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 8,
+    id: 9,
     date: "August 2025",
     title: "Data Jobs Dashboard with Power BI – 2024 Market Insights",
     shortDescription:
@@ -126,7 +126,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 9,
+    id: 10,
     date: "August 2025",
     title: "Data Science Job Market Analysis using Excel, Power Query & DAX",
     shortDescription:
@@ -140,7 +140,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 10,
+    id: 11,
     date: "July 2025",
     title: "Excel Salary Dashboard – Data Jobs Salary Insights",
     shortDescription:
@@ -154,7 +154,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 11,
+    id: 12,
     date: "March 2025",
     title: "MedGenix – AI-powered Prescription Scanner & Generic Medicine",
     shortDescription:
@@ -168,7 +168,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 12,
+    id: 13,
     date: "March 2025",
     title: "Pregnancy Wellness Platform – A Holistic Maternity Companion",
     shortDescription:
@@ -182,7 +182,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 13,
+    id: 14,
     date: "January 2025",
     title: "MERN Auth App",
     shortDescription:
@@ -196,7 +196,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 14,
+    id: 15,
     date: "December 2024",
     title: "Airbnb Clone – MERN Stack",
     shortDescription:
@@ -217,7 +217,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 15,
+    id: 16,
     date: "October 2024",
     title: "Spotify Clone – Frontend Only",
     shortDescription:
@@ -231,7 +231,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 16,
+    id: 17,
     date: "September 2024",
     title: "Sushi-Themed Website",
     shortDescription:
