@@ -5,7 +5,7 @@ export const projects = [
     title: "  Smart-Motorcycle-Traffic-Violation-Detection-System",
     shortDescription:
       "AI-powered traffic violation detection using dual YOLOv8 models and PaddleOCR. Detects helmet violations, per-motorcycle triple riding, and extracts Indian license plate numbers from images and videos through a FastAPI backend and Next.js dashboard.",
-    thumbnail: "/images/project/motorcycle.png",
+    thumbnail: "/images/project/Motorcycle.png",
     tags: ["Machine Learning", "Computer Vision", "YOLOv8"],
     techstack: ["Python", "OCR", "YOLOv8", "FastAPI", "Next.js", "Docker", "Vercel", "HuggingFace"],
     live: "https://smart-motorcycle-traffic-violation.vercel.app/",
