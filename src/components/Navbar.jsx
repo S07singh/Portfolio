@@ -1,214 +1,172 @@
 import React, { useState, useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
+import { socialLinks } from '../data/site'
+
+const navItems = [
+  { name: 'Work', href: '/projects' },
+  { name: 'Journey', href: '/journey' },
+  { name: 'Certificates', href: '/certificates' },
+  { name: 'Resume', href: '/resume' },
+]
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close mobile menu when route changes
+  useEffect(() => setIsOpen(false), [location])
+
   useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  const goToContact = (e) => {
+    e.preventDefault()
     setIsOpen(false)
-  }, [location])
-
-  const navItems = [
-    { name: 'Home', href: '/', sectionId: null },
-    { name: 'Projects', href: '/projects', sectionId: 'projects' },
-    { name: 'Certificates', href: '/certificates', sectionId: 'certificates' },
-    { name: 'Journey', href: '/journey', sectionId: null },
-    { name: 'Resume', href: '/resume', sectionId: null },
-  ]
-
-  // Smooth scroll to sections on home page
-  const handleHomeScroll = (e, sectionId) => {
-    if (location.pathname === '/' && sectionId) {
-      e.preventDefault()
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
+    if (location.pathname === '/') {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate('/')
+      setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 350)
     }
   }
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-dark-bg/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold text-green-accent cursor-pointer"
-            >
-              SK
-            </motion.div>
+    <>
+      <motion.div
+        className="fixed left-0 right-0 top-0 z-[70] h-[2px] origin-left bg-accent"
+        style={{ scaleX: progress }}
+      />
+
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6"
+      >
+        <nav
+          className={`mx-auto flex max-w-6xl items-center justify-between rounded-full border px-5 py-2.5 transition-all duration-500 ${
+            scrolled || isOpen
+              ? 'border-line bg-paper/80 shadow-[0_8px_30px_-12px_rgba(26,24,20,0.25)] backdrop-blur-md'
+              : 'border-transparent bg-transparent'
+          }`}
+        >
+          <Link to="/" className="group flex items-center gap-2" aria-label="Home">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink font-serif text-lg italic text-cream transition-colors duration-300 group-hover:bg-accent">
+              S
+            </span>
+            <span className="hidden font-serif text-xl sm:inline">Sudhir Singh</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-6">
-              {navItems.map((item, index) => {
-                // If on homepage and item has a sectionId, use anchor link with scroll
-                if (location.pathname === '/' && item.sectionId) {
-                  return (
-                    <a
-                      key={item.name}
-                      href={`#${item.sectionId}`}
-                      onClick={(e) => handleHomeScroll(e, item.sectionId)}
-                      className="text-light-slate hover:text-green-accent transition-colors duration-300 font-medium"
-                    >
-                      <motion.span
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ y: -2 }}
-                      >
-                        {item.name}
-                      </motion.span>
-                    </a>
-                  );
+          <div className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                className={({ isActive }) =>
+                  `relative rounded-full px-4 py-1.5 text-sm transition-colors duration-300 ${
+                    isActive ? 'text-cream' : 'text-ink-soft hover:text-ink'
+                  }`
                 }
-                // Otherwise, use NavLink for page navigation
-                return (
-                  <NavLink
-                    key={item.name}
-                    to={item.href}
-                    className={({ isActive }) =>
-                      `text-light-slate hover:text-green-accent transition-colors duration-300 font-medium ${
-                        isActive ? 'text-green-accent' : ''
-                      }`
-                    }
-                  >
-                    <motion.span
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ y: -2 }}
-                    >
-                      {item.name}
-                    </motion.span>
-                  </NavLink>
-                );
-              })}
-              {/* Contact Link (scroll on home page) */}
-              {location.pathname === '/' && (
-                <a
-                  href="#contact"
-                  onClick={(e) => handleHomeScroll(e, 'contact')}
-                  className="text-light-slate hover:text-green-accent transition-colors duration-300 font-medium"
-                >
-                  <motion.span
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: navItems.length * 0.1 }}
-                    whileHover={{ y: -2 }}
-                  >
-                    Contact
-                  </motion.span>
-                </a>
-              )}
-            </div>
+              >
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-ink"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                      />
+                    )}
+                    <span className="relative">{item.name}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="flex items-center gap-3">
+            <a href="/#contact" onClick={goToContact} className="btn-ink hidden !py-2 !px-5 md:inline-flex">
+              Let&apos;s talk
+            </a>
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-light-slate hover:text-green-accent transition-colors duration-300"
+              onClick={() => setIsOpen((o) => !o)}
+              className="relative flex h-9 w-9 items-center justify-center md:hidden"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isOpen}
             >
-              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+              <span className={`absolute h-px w-5 bg-ink transition-transform duration-300 ${isOpen ? 'rotate-45' : '-translate-y-1'}`} />
+              <span className={`absolute h-px w-5 bg-ink transition-transform duration-300 ${isOpen ? '-rotate-45' : 'translate-y-1'}`} />
             </button>
           </div>
-        </div>
+        </nav>
+      </motion.header>
 
-        {/* Mobile Navigation */}
-        <motion.div
-          initial={false}
-          animate={{ height: isOpen ? 'auto' : 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden overflow-hidden"
-        >
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-dark-secondary/95 backdrop-blur-md rounded-lg mt-2">
-            {navItems.map((item, index) => {
-              // If on homepage and item has a sectionId, use anchor link with scroll
-              if (location.pathname === '/' && item.sectionId) {
-                return (
-                  <a
-                    key={item.name}
-                    href={`#${item.sectionId}`}
-                    onClick={(e) => {
-                      handleHomeScroll(e, item.sectionId);
-                      setIsOpen(false);
-                    }}
-                    className="block px-3 py-2 text-light-slate hover:text-green-accent transition-colors duration-300"
-                  >
-                    <motion.span
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      {item.name}
-                    </motion.span>
-                  </a>
-                );
-              }
-              // Otherwise, use NavLink for page navigation
-              return (
-                <NavLink
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ clipPath: 'circle(0% at 100% 0%)' }}
+            animate={{ clipPath: 'circle(150% at 100% 0%)' }}
+            exit={{ clipPath: 'circle(0% at 100% 0%)' }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 flex flex-col justify-between bg-cream px-6 pb-10 pt-28 md:hidden"
+          >
+            <div className="flex flex-col gap-2">
+              {[{ name: 'Home', href: '/' }, ...navItems].map((item, i) => (
+                <motion.div
                   key={item.name}
-                  to={item.href}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 text-light-slate hover:text-green-accent transition-colors duration-300 ${
-                      isActive ? 'text-green-accent' : ''
-                    }`
-                  }
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.06 }}
                 >
-                  <motion.span
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                  <NavLink
+                    to={item.href}
+                    end
+                    className={({ isActive }) =>
+                      `display flex items-baseline gap-4 py-1 text-6xl ${isActive ? 'italic text-accent' : 'text-ink'}`
+                    }
                   >
+                    <span className="eyebrow">0{i + 1}</span>
                     {item.name}
-                  </motion.span>
-                </NavLink>
-              );
-            })}
-            {/* Contact Link (scroll on home page) */}
-            {location.pathname === '/' && (
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  handleHomeScroll(e, 'contact')
-                  setIsOpen(false)
-                }}
-                className="block px-3 py-2 text-light-slate hover:text-green-accent transition-colors duration-300"
+                  </NavLink>
+                </motion.div>
+              ))}
+              <motion.a
+                href="/#contact"
+                onClick={goToContact}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="display flex items-baseline gap-4 py-1 text-6xl"
               >
+                <span className="eyebrow">06</span>
                 Contact
-              </a>
-            )}
-          </div>
-        </motion.div>
-      </div>
-    </motion.nav>
+              </motion.a>
+            </div>
+            <div className="flex gap-6">
+              {socialLinks.map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="eyebrow !text-ink">
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 
 export default Navbar
-

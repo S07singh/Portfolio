@@ -2,7 +2,7 @@ export const projects = [
   {
     id: 1,
     date: "May 2026",
-    title: "  Smart-Motorcycle-Traffic-Violation-Detection-System",
+    title: "Smart Motorcycle Traffic Violation Detection System",
     shortDescription:
       "AI-powered traffic violation detection using dual YOLOv8 models and PaddleOCR. Detects helmet violations, per-motorcycle triple riding, and extracts Indian license plate numbers from images and videos through a FastAPI backend and Next.js dashboard.",
     thumbnail: "/images/project/Motorcycle.png",

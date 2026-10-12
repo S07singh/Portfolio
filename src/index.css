@@ -1,91 +1,107 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
+  body {
+    @apply bg-cream text-ink font-sans antialiased;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  ::selection {
+    @apply bg-accent text-paper;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-cream;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-line rounded-full border-2 border-solid border-cream;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-cream;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+@layer components {
+  /* Small uppercase mono label used above headings and in metadata */
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-muted;
+  }
+
+  .display {
+    @apply font-serif font-normal leading-[0.95] tracking-[-0.02em];
+  }
+
+  .container-x {
+    @apply max-w-7xl mx-auto px-4 sm:px-8 lg:px-12;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper/70 px-3 py-1 text-xs text-ink-soft;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-colors duration-300;
+  }
+  .btn-ink {
+    @apply btn bg-ink text-cream hover:bg-accent;
+  }
+  .btn-line {
+    @apply btn border border-ink/80 text-ink hover:bg-ink hover:text-cream;
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-500;
+  }
+  .link-underline:hover::after {
+    @apply origin-left scale-x-100;
+  }
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #0a192f;
-  color: #ccd6f6;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a192f;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #64ffda;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #4fd1c7;
-}
-
-/* Selection color */
-::selection {
-  background-color: #64ffda;
-  color: #0a192f;
-}
-
-/* Smooth transitions */
-* {
-  transition: all 0.3s ease;
-}
-
-/* Custom utilities */
-.text-shadow {
-  text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
-}
-
-.glow {
-  box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
-}
-
-/* Animation delays */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-
-/* Cursor light effect */
-.cursor-light {
+/* Paper grain over everything — subtle, non-interactive */
+.grain::before {
+  content: '';
   position: fixed;
+  inset: 0;
+  z-index: 60;
   pointer-events: none;
-  z-index: 9999;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(100, 255, 218, 0.1) 0%, rgba(100, 255, 218, 0.05) 30%, transparent 70%);
-  transition: opacity 0.3s ease;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.28 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Hide cursor light on mobile devices */
-@media (max-width: 768px) {
-  .cursor-light {
-    display: none;
+/* Hide the native cursor only when the custom one is active */
+@media (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-spin-slow {
+    animation: none;
   }
 }

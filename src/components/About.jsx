@@ -1,167 +1,114 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { FaCode, FaBrain, FaRobot } from "react-icons/fa";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useInView, animate } from "framer-motion";
+import SectionHeading from "./SectionHeading";
+import { projects } from "../data/projects";
+import { certificates } from "../data/certificates";
+
+const focusAreas = [
+  {
+    title: "Agentic AI & LLM apps",
+    body: "Multi-step agents and RAG pipelines with LangChain, LangGraph and LangSmith, served through FastAPI.",
+  },
+  {
+    title: "Computer vision & ML",
+    body: "YOLOv8 detection, OCR, and classical ML: feature engineering, Optuna tuning and honest evaluation.",
+  },
+  {
+    title: "Shipping end to end",
+    body: "React / Next.js front ends, Docker, and deploys on Vercel and Hugging Face so models leave the notebook.",
+  },
+];
+
+const Counter = ({ to, suffix = "" }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(0, to, { duration: 1.6, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setValue(Math.round(v)) });
+    return () => controls.stop();
+  }, [inView, to]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {value}
+      {suffix}
+    </span>
+  );
+};
 
 const About = () => {
-  const highlights = [
-    {
-      icon: FaCode,
-      title: "Full-Stack Development",
-      description:
-        "Building seamless and scalable web applications using the MERN stack.",
-    },
-    {
-      icon: FaBrain,
-      title: "AI Agent Development",
-      description:
-        "Creating intelligent agents using LangChain, LangGraph, and LangSmith for dynamic automation.",
-    },
-    {
-      icon: FaRobot,
-      title: "Machine Learning & Data Analysis",
-      description:
-        "Skilled in Pandas, NumPy, Matplotlib, and scikit-learn for AI-driven insights.",
-    },
+  const stats = [
+    { value: projects.length, suffix: "", label: "Projects built" },
+    { value: projects.filter((p) => p.tags.some((t) => ["AI", "Machine Learning", "Computer Vision"].includes(t))).length, suffix: "", label: "AI / ML projects" },
+    { value: certificates.length, suffix: "", label: "Certifications" },
+    { value: 30, suffix: "+", label: "Tools in the kit" },
   ];
 
   return (
-    <section id="about" className="py-20 bg-dark-secondary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold text-light-slate mb-4">
-            About Me
-          </h2>
-          <div className="w-24 h-1 bg-green-accent mx-auto mb-8"></div>
-        </motion.div>
+    <section id="about" className="relative py-24 md:py-36">
+      <div className="container-x">
+        <SectionHeading index="01" label="About" title={<>A builder who likes <span className="italic text-accent">thinking</span> machines.</>} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Text Content */}
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9 }}
+            viewport={{ once: true, margin: "-80px" }}
+            className="space-y-6 text-lg leading-relaxed text-ink-soft lg:col-span-7"
           >
-            <p className="text-lg text-slate leading-relaxed">
-              Hello! I'm Sudhir Kumar Singh, a passionate Full-Stack Developer
-              and AI & Data Science enthusiast pursuing my engineering degree at
-              DYPIEMR. I build intelligent web applications that merge modern
-              web technologies with AI frameworks like LangChain, LangGraph, and
-              LangSmith to develop context-aware agents.
+            <p className="font-serif text-3xl leading-snug text-ink">
+              I&apos;m Sudhir, an AI &amp; Data Science engineering student in Pune who turns models into things people can actually use.
+            </p>
+            <p>
+              My path started with C++, the web and a lot of curiosity about how intelligent systems reason. That led
+              me from MERN apps and hackathons into data science, and then into generative AI, where I now spend most of my time
+              building agents, retrieval pipelines and vision systems.
+            </p>
+            <p>
+              I care about the whole loop: clean data, a model that&apos;s honestly evaluated, an API around it, and an interface
+              that makes it useful. Outside of shipping, I read AI research and experiment with agent architectures.
             </p>
 
-            <p className="text-lg text-slate leading-relaxed">
-              My journey in tech began with curiosity about how intelligent
-              systems think, leading me to explore web development and
-              data-driven AI solutions. I’m proficient with Pandas, NumPy,
-              Matplotlib, and scikit-learn, helping me analyze data and develop
-              models that power smarter, real-world applications.
-            </p>
-
-            <p className="text-lg text-slate leading-relaxed">
-              Beyond coding, I love exploring AI research, experimenting with
-              agentic systems, and contributing to open-source projects that
-              fuse creativity with technology.
-            </p>
-
-            <div className="pt-6">
-              <h3 className="text-xl font-semibold text-light-slate mb-4">
-                Technologies I've been working with recently:
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  "React.js",
-                  "Node.js",
-                  "Python",
-                  "MongoDB",
-                  "LangChain",
-                  "LangGraph",
-                  "LangSmith",
-                  "scikit-learn",
-                ].map((tech, index) => (
-                  <motion.div
-                    key={tech}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="flex items-center text-slate"
-                  >
-                    <span className="text-green-accent mr-2">▹</span>
-                    {tech}
-                  </motion.div>
-                ))}
-              </div>
+            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line pt-0 sm:grid-cols-4">
+              {stats.map((s) => (
+                <div key={s.label} className="bg-paper p-5">
+                  <div className="display text-5xl text-ink">
+                    <Counter to={s.value} suffix={s.suffix} />
+                  </div>
+                  <div className="eyebrow mt-2">{s.label}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
-          {/* Right Column - Highlights */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            {highlights.map((highlight, index) => (
-              <motion.div
-                key={highlight.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.6 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05, x: 10 }}
-                className="bg-dark-tertiary p-6 rounded-lg border border-slate/20 hover:border-green-accent/50 transition-all duration-300"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="text-green-accent text-2xl">
-                    <highlight.icon />
+          <div className="lg:col-span-5">
+            <p className="eyebrow mb-6">What I focus on</p>
+            <ul className="border-t border-line">
+              {focusAreas.map((f, i) => (
+                <motion.li
+                  key={f.title}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.12, duration: 0.7 }}
+                  viewport={{ once: true }}
+                  className="group border-b border-line py-6"
+                >
+                  <div className="flex items-baseline gap-5">
+                    <span className="font-mono text-xs text-accent">0{i + 1}</span>
+                    <div>
+                      <h3 className="font-serif text-2xl transition-transform duration-500 group-hover:translate-x-2">
+                        {f.title}
+                      </h3>
+                      <p className="mt-2 text-base text-ink-soft">{f.body}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-light-slate mb-2">
-                      {highlight.title}
-                    </h3>
-                    <p className="text-slate">{highlight.description}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-
-            {/* Profile Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              viewport={{ once: true }}
-              className="mt-8 flex justify-center"
-            >
-              <div className="relative">
-                <div className="w-48 h-48 bg-gradient-to-br from-green-accent/20 to-transparent rounded-lg flex items-center justify-center border-2 border-green-accent/30 overflow-hidden">
-                  <img
-                    src="/images/sudhir.jpg"
-                    alt="Sudhir Kumar Singh"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="absolute inset-0 border-2 border-green-accent/20 rounded-lg"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

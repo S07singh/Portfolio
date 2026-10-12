@@ -1,51 +1,32 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import emailjs from '@emailjs/browser'
-import { FaEnvelope, FaLinkedin, FaGithub, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaArrowRight, FaCopy, FaCheck } from 'react-icons/fa'
+import Magnetic from './Magnetic'
+import { site, socialLinks } from '../data/site'
+
+const fields = [
+  { name: 'name', label: "What's your name?", type: 'text', placeholder: 'Jane Doe' },
+  { name: 'email', label: 'Your email', type: 'email', placeholder: 'jane@company.com' },
+  { name: 'subject', label: 'What is it about?', type: 'text', placeholder: 'AI engineer role, collaboration…' },
+]
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null)
-  const form = useRef()
+  const [copied, setCopied] = useState(false)
 
-  const contactInfo = [
-    {
-      icon: FaEnvelope,
-      label: 'Email',
-      value: 'sudhirsingh3923@gmail.com',
-      href: 'mailto:sudhirsingh3923@gmail.com'
-    },
-    {
-      icon: FaLinkedin,
-      label: 'LinkedIn',
-      value: 'linkedin.com/in/sudhir-singh867',
-      href: 'https://www.linkedin.com/in/sudhir-singh867'
-    },
-    {
-      icon: FaGithub,
-      label: 'GitHub',
-      value: 'github.com/S07singh',
-      href: 'https://github.com/S07singh'
-    },
-    {
-      icon: FaMapMarkerAlt,
-      label: 'Location',
-      value: 'Pune, India',
-      href: '#'
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(site.email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      window.location.href = `mailto:${site.email}`
     }
-  ]
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
   }
 
   const handleSubmit = async (e) => {
@@ -58,13 +39,13 @@ const Contact = () => {
       const templateId = 'template_2g21sv7'
       const publicKey = 'oqKuycwjh0AeWj2QI'
 
-      // ✅ Send with variables that match your EmailJS template
+      // Variables must match the EmailJS template
       const params = {
         name: formData.name,
         email: formData.email,
         subject: formData.subject,
         message: formData.message,
-        time: new Date().toLocaleString() // Matches {{time}} in your template
+        time: new Date().toLocaleString(),
       }
 
       await emailjs.send(serviceId, templateId, params, publicKey)
@@ -79,205 +60,137 @@ const Contact = () => {
     }
   }
 
+  const inputClass =
+    'w-full border-0 border-b border-cream/20 bg-transparent px-0 py-3 text-lg text-cream placeholder-cream/30 transition-colors duration-300 focus:border-accent focus:outline-none focus:ring-0'
+
   return (
-    <section id="contact" className="py-20 bg-dark-secondary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
+    <section id="contact" className="relative overflow-hidden bg-ink py-24 text-cream md:py-36">
+      <div aria-hidden="true" className="absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full bg-accent/20 blur-[120px]" />
+
+      <div className="container-x relative">
+        <div className="mb-6 flex items-center gap-4">
+          <span className="eyebrow !text-accent">(05)</span>
+          <span className="eyebrow !text-cream/60">Contact</span>
+          <span className="h-px flex-1 bg-cream/15" />
+        </div>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="display text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-light-slate mb-4">
-            Get In Touch
-          </h2>
-          <div className="w-24 h-1 bg-green-accent mx-auto mb-8"></div>
-          <p className="text-lg text-slate max-w-3xl mx-auto">
-            I'm always interested in new opportunities and exciting projects. 
-            Whether you have a question or just want to say hi, I'll try my best to get back to you!
-          </p>
-        </motion.div>
+          Let&apos;s build something <span className="italic text-accent">intelligent</span>.
+        </motion.h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
+        <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-12">
+          <div className="space-y-10 lg:col-span-5">
+            <p className="max-w-md text-lg text-cream/70">
+              I&apos;m looking for AI / ML engineering roles and interesting problems. My inbox is open, and I usually
+              reply within a day.
+            </p>
+
             <div>
-              <h3 className="text-2xl font-semibold text-light-slate mb-6">
-                Let's Connect
-              </h3>
-              <p className="text-slate leading-relaxed mb-8">
-                I'm currently looking for new opportunities, my inbox is always open. 
-                Whether you have a question or just want to say hi, I'll try my best to get back to you!
-              </p>
+              <p className="eyebrow mb-3 !text-cream/50">Email</p>
+              <button
+                onClick={copyEmail}
+                data-cursor={copied ? 'Copied' : 'Copy'}
+                className="group flex items-center gap-3 text-left font-serif text-2xl sm:text-3xl"
+              >
+                <span className="link-underline break-all">{site.email}</span>
+                {copied ? <FaCheck className="shrink-0 text-sm text-accent" /> : <FaCopy className="shrink-0 text-sm text-cream/40 group-hover:text-accent" />}
+              </button>
             </div>
 
-            <div className="space-y-4">
-              {contactInfo.map((info, index) => (
-                <motion.a
-                  key={info.label}
-                  href={info.href}
-                  target={info.href.startsWith('http') ? '_blank' : '_self'}
-                  rel={info.href.startsWith('http') ? 'noopener noreferrer' : ''}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.05, x: 10 }}
-                  className="flex items-center space-x-4 p-4 bg-dark-secondary rounded-lg border border-slate/20 hover:border-green-accent/50 transition-all duration-300 group"
-                >
-                  <div className="text-green-accent group-hover:scale-110 transition-transform duration-300">
-                    <info.icon size={20} />
-                  </div>
-                  <div>
-                    <div className="text-sm text-slate">{info.label}</div>
-                    <div className="text-light-slate font-medium">{info.value}</div>
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Social Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              viewport={{ once: true }}
-              className="pt-8"
-            >
-              <h4 className="text-lg font-semibold text-light-slate mb-4">
-                Follow Me
-              </h4>
-              <div className="flex space-x-4">
-                {contactInfo.slice(0, 3).map((info, index) => (
-                  <motion.a
-                    key={info.label}
-                    href={info.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, y: -5 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="text-slate hover:text-green-accent transition-colors duration-300"
-                    aria-label={info.label}
-                  >
-                    <info.icon size={24} />
-                  </motion.a>
+            <div>
+              <p className="eyebrow mb-3 !text-cream/50">Socials</p>
+              <ul className="border-t border-cream/15">
+                {socialLinks.slice(0, 2).map((s) => (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between border-b border-cream/15 py-4"
+                    >
+                      <span className="flex items-center gap-3">
+                        <s.icon className="text-cream/50 transition-colors group-hover:text-accent" />
+                        {s.label}
+                      </span>
+                      <span className="font-mono text-xs text-cream/50 transition-transform duration-300 group-hover:-translate-x-2">
+                        {s.handle} ↗
+                      </span>
+                    </a>
+                  </li>
                 ))}
-              </div>
-            </motion.div>
-          </motion.div>
+              </ul>
+            </div>
 
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-dark-secondary p-8 rounded-lg border border-slate/20"
-          >
-            <h3 className="text-2xl font-semibold text-light-slate mb-6">
-              Send me a message
-            </h3>
+            <p className="eyebrow !text-cream/50">Based in {site.location} · Open to remote</p>
+          </div>
 
-            <form ref={form} onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-light-slate mb-2">
-                    Name *
-                  </label>
+          <form onSubmit={handleSubmit} className="space-y-8 lg:col-span-7">
+            {fields.map((f, i) => (
+              <div key={f.name} className="flex gap-5">
+                <span className="pt-4 font-mono text-xs text-accent">0{i + 1}</span>
+                <label className="flex-1">
+                  <span className="block font-serif text-2xl">{f.label}</span>
                   <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    type={f.type}
+                    name={f.name}
+                    value={formData[f.name]}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-dark-tertiary border border-slate/20 rounded-lg text-light-slate placeholder-slate focus:border-green-accent focus:outline-none transition-colors duration-300"
-                    placeholder="Your name"
+                    placeholder={f.placeholder}
+                    className={inputClass}
                   />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-light-slate mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-dark-tertiary border border-slate/20 rounded-lg text-light-slate placeholder-slate focus:border-green-accent focus:outline-none transition-colors duration-300"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-light-slate mb-2">
-                  Subject *
                 </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-dark-tertiary border border-slate/20 rounded-lg text-light-slate placeholder-slate focus:border-green-accent focus:outline-none transition-colors duration-300"
-                  placeholder="What's this about?"
-                />
               </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-light-slate mb-2">
-                  Message *
-                </label>
+            ))}
+            <div className="flex gap-5">
+              <span className="pt-4 font-mono text-xs text-accent">04</span>
+              <label className="flex-1">
+                <span className="block font-serif text-2xl">Your message</span>
                 <textarea
-                  id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows={6}
-                  className="w-full px-4 py-3 bg-dark-tertiary border border-slate/20 rounded-lg text-light-slate placeholder-slate focus:border-green-accent focus:outline-none transition-colors duration-300 resize-none"
-                  placeholder="Hi Sudhir, I'd like to talk about..."
+                  rows={4}
+                  placeholder="Hi Sudhir, I'd like to talk about…"
+                  className={`${inputClass} resize-none`}
                 />
-              </div>
+              </label>
+            </div>
 
-              {submitStatus && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`p-4 rounded-lg ${
-                    submitStatus === 'success' 
-                      ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                  }`}
-                >
-                  {submitStatus === 'success' 
-                    ? 'Message sent successfully! I\'ll get back to you soon.' 
-                    : 'Failed to send message. Please try again or contact me directly.'}
-                </motion.div>
-              )}
-
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full px-8 py-3 bg-green-accent text-dark-bg font-semibold rounded-lg hover:bg-green-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            {submitStatus && (
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`rounded-2xl border px-5 py-4 text-sm ${
+                  submitStatus === 'success' ? 'border-sage/50 bg-sage/20 text-cream' : 'border-accent/50 bg-accent/15 text-cream'
+                }`}
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </motion.button>
-            </form>
-          </motion.div>
+                {submitStatus === 'success'
+                  ? "Message sent. Thanks! I'll get back to you soon."
+                  : `Couldn't send that. Please try again or email ${site.email} directly.`}
+              </motion.p>
+            )}
+
+            <div className="pl-9">
+              <Magnetic>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="group flex h-36 w-36 flex-col items-center justify-center gap-2 rounded-full bg-accent text-cream transition-colors duration-300 hover:bg-cream hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span className="text-sm font-medium">{isSubmitting ? 'Sending…' : 'Send it'}</span>
+                  <FaArrowRight className="-rotate-45 transition-transform duration-300 group-hover:rotate-0" />
+                </button>
+              </Magnetic>
+            </div>
+          </form>
         </div>
       </div>
     </section>

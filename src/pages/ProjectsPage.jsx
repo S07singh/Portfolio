@@ -1,234 +1,123 @@
-import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaFilter, FaPlay } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaArrowRight } from 'react-icons/fa';
+import Modal from '../components/Modal';
+import ProjectDetail from '../components/ProjectDetail';
 import { projects } from '../data/projects';
-import { getTechIcon } from '../utils/techIcons';
-import { getYouTubeVideoId, getYouTubeEmbedUrl } from '../utils/youtubeHelper';
+
+const hasTag = (...tags) => (p) => p.tags.some((t) => tags.includes(t));
+
+const filters = [
+  { name: 'All', test: () => true },
+  { name: 'Featured', test: (p) => p.featured },
+  { name: 'Generative AI', test: hasTag('AI', 'LangGraph', 'LangChain') },
+  { name: 'Machine Learning', test: hasTag('Machine Learning', 'Time Series', 'Computer Vision') },
+  { name: 'Data Analytics', test: hasTag('Data Analytics', 'Data Science', 'Analytics') },
+  { name: 'Full Stack', test: hasTag('Full Stack', 'Frontend') },
+];
 
 const ProjectsPage = () => {
   const [filter, setFilter] = useState('All');
-  const [hoveredProject, setHoveredProject] = useState(null);
+  const [selected, setSelected] = useState(null);
 
-  const filters = ['All', 'Featured', 'AI', 'LangGraph', 'LangChain', 'Full Stack'];
-
-  const filteredProjects = projects.filter((project) => {
-    if (filter === 'All') return true;
-    if (filter === 'Featured') return project.featured;
-    return project.tags.includes(filter);
-  });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
+  const active = filters.find((f) => f.name === filter);
+  const filteredProjects = projects.filter(active.test);
 
   return (
-    <div className="min-h-screen bg-dark-bg pt-24 pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen pb-24 pt-36">
+      <div className="container-x">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="border-b border-ink pb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-light-slate mb-4">
-            All Projects
+          <p className="eyebrow mb-6">Archive · {projects.length} projects</p>
+          <h1 className="display text-7xl sm:text-8xl md:text-9xl">
+            All <span className="italic text-accent">work</span>
           </h1>
-          <div className="w-24 h-1 bg-green-accent mx-auto mb-6"></div>
-          <p className="text-lg text-slate max-w-2xl mx-auto">
-            Explore my complete portfolio of projects spanning full-stack development, AI/ML applications, and modern web technologies.
+          <p className="mt-6 max-w-2xl text-lg text-ink-soft">
+            Everything from LLM agents and computer vision to dashboards and full-stack apps, newest first.
           </p>
         </motion.div>
 
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-12"
-        >
-          <FaFilter className="text-green-accent" />
-          {filters.map((filterName) => (
-            <motion.button
-              key={filterName}
-              onClick={() => setFilter(filterName)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                filter === filterName
-                  ? 'bg-green-accent text-dark-bg'
-                  : 'bg-dark-secondary text-slate border border-slate/20 hover:border-green-accent/50'
-              }`}
-            >
-              {filterName}
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Projects List with Alternating Layout */}
-        <div className="space-y-20">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.8 }}
-              viewport={{ once: true }}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
-                index % 2 === 1 ? "lg:grid-flow-col-dense" : ""
-              }`}
-            >
-              {/* Project Image/Video */}
-              <motion.div
-                className={`relative group ${
-                  index % 2 === 1 ? "lg:col-start-2" : ""
+        <div className="flex flex-wrap gap-2 py-8" role="tablist">
+          {filters.map((f) => {
+            const count = projects.filter(f.test).length;
+            return (
+              <button
+                key={f.name}
+                role="tab"
+                aria-selected={filter === f.name}
+                onClick={() => setFilter(f.name)}
+                className={`relative rounded-full border px-4 py-2 text-sm transition-colors duration-300 ${
+                  filter === f.name ? 'border-ink text-cream' : 'border-line text-ink-soft hover:border-ink hover:text-ink'
                 }`}
               >
-                <div 
-                  className="relative overflow-hidden rounded-lg bg-dark-tertiary border border-slate/20 hover:border-green-accent/50 transition-all duration-300 cursor-pointer"
-                  onMouseEnter={() => setHoveredProject(project.id)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                  onClick={() => {
-                    if (project.video) {
-                      window.open(project.video, '_blank', 'noopener,noreferrer');
-                    }
-                  }}
-                >
-                  {/* Thumbnail - Always visible */}
+                {filter === f.name && (
+                  <motion.span layoutId="filter-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />
+                )}
+                <span className="relative">
+                  {f.name} <sup className="font-mono text-[10px] opacity-60">{count}</sup>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <motion.div layout className="grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, i) => (
+              <motion.button
+                layout
+                key={project.id}
+                data-cursor="Open"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, delay: Math.min(i, 6) * 0.04 }}
+                onClick={() => setSelected(project)}
+                className={`group text-left ${i % 2 === 1 ? 'md:mt-20' : ''}`}
+              >
+                <div className="relative overflow-hidden rounded-3xl border border-line bg-cream-2">
                   <img
                     src={project.thumbnail}
                     alt={project.title}
-                    className={`w-full h-full object-cover aspect-video transition-opacity duration-500 ${
-                      hoveredProject === project.id && project.video ? 'opacity-0' : 'opacity-80 group-hover:opacity-100'
-                    }`}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                   />
-
-                  {/* YouTube Video - Shows on hover if video exists */}
-                  {project.video && hoveredProject === project.id && (
-                    <div className="absolute inset-0">
-                      <iframe
-                        src={getYouTubeEmbedUrl(getYouTubeVideoId(project.video))}
-                        className="w-full h-full"
-                        frameBorder="0"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                        title={project.title}
-                      />
-                    </div>
-                  )}
-
+                  <div className="absolute inset-x-4 bottom-4 flex flex-wrap gap-2 opacity-0 transition-all duration-500 group-hover:opacity-100">
+                    {project.techstack.slice(0, 4).map((t) => (
+                      <span key={t} className="rounded-full bg-paper/90 px-3 py-1 text-xs backdrop-blur">{t}</span>
+                    ))}
+                  </div>
                   {project.featured && (
-                    <span className="absolute top-3 right-3 px-3 py-1.5 bg-green-accent text-dark-bg text-xs font-bold rounded z-10">
+                    <span className="absolute left-4 top-4 rounded-full bg-ink px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-cream">
                       Featured
                     </span>
                   )}
                 </div>
-              </motion.div>
-
-              {/* Project Content */}
-              <motion.div
-                className={`space-y-4 ${
-                  index % 2 === 1 ? "lg:col-start-1 lg:row-start-1" : ""
-                }`}
-                initial={{ opacity: 0, x: index % 2 === 1 ? 50 : -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 + 0.3, duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex items-center space-x-2">
-                  <h3 className="text-2xl font-bold text-light-slate">
-                    {project.title}
-                  </h3>
+                <div className="mt-5 flex items-start justify-between gap-6">
+                  <div>
+                    <p className="eyebrow">{project.date} · {project.tags[0]}</p>
+                    <h2 className="mt-2 font-serif text-3xl leading-tight transition-colors duration-300 group-hover:text-accent">
+                      {project.title.trim()}
+                    </h2>
+                    <p className="mt-2 line-clamp-2 text-ink-soft">{project.shortDescription}</p>
+                  </div>
+                  <span className="mt-6 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink transition-colors duration-300 group-hover:bg-ink group-hover:text-cream">
+                    <FaArrowRight className="-rotate-45 transition-transform duration-300 group-hover:rotate-0" size={12} />
+                  </span>
                 </div>
-
-                <div className="bg-dark-tertiary p-4 rounded-lg border border-slate/20">
-                  <p className="text-slate leading-relaxed">
-                    {project.shortDescription}
-                  </p>
-                </div>
-
-                {/* Tech Stack with Icons */}
-                <div className="flex flex-wrap gap-2">
-                  {project.techstack.slice(0, 5).map((tech) => {
-                    const techInfo = getTechIcon(tech);
-                    const IconComponent = techInfo.icon;
-                    return (
-                      <div
-                        key={tech}
-                        className="flex items-center space-x-2 bg-dark-bg px-3 py-1 rounded-full border border-slate/20"
-                      >
-                        <IconComponent size={16} style={{ color: techInfo.color }} />
-                        <span className="text-sm text-slate">{tech}</span>
-                      </div>
-                    );
-                  })}
-                  {project.techstack.length > 5 && (
-                    <div className="flex items-center bg-dark-bg px-3 py-1 rounded-full border border-slate/20">
-                      <span className="text-sm text-slate">
-                        +{project.techstack.length - 5}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Links */}
-                <div className="flex space-x-4">
-                  <motion.a
-                    href={project.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center space-x-2 text-green-accent hover:text-green-accent/80 transition-colors duration-300"
-                  >
-                    <FaGithub />
-                    <span>GitHub</span>
-                  </motion.a>
-                  {project.live && (
-                    <motion.a
-                      href={project.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center space-x-2 text-green-accent hover:text-green-accent/80 transition-colors duration-300"
-                    >
-                      <FaExternalLinkAlt />
-                      <span>Live Demo</span>
-                    </motion.a>
-                  )}
-                </div>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* No Results */}
-        {filteredProjects.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <p className="text-slate text-lg">No projects found for this filter.</p>
-          </motion.div>
-        )}
+              </motion.button>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
+
+      <Modal isOpen={selected !== null} onClose={() => setSelected(null)}>
+        {selected && <ProjectDetail project={selected} />}
+      </Modal>
     </div>
   );
 };

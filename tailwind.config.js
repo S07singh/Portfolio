@@ -7,36 +7,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        'green-accent': '#64ffda',
-        'green-500': '#22c55e',
-        'dark-bg': '#0a192f',
-        'dark-secondary': '#112240',
-        'dark-tertiary': '#233554',
-        'light-slate': '#ccd6f6',
-        'slate': '#8892b0',
-        'lightest-slate': '#a8b2d1',
+        cream: '#F3EDE2',
+        'cream-2': '#EAE2D3',
+        paper: '#FBF8F2',
+        ink: '#1A1814',
+        'ink-soft': '#4D4840',
+        muted: '#857E72',
+        line: '#D8CDBA',
+        accent: '#C4552D',
+        'accent-dark': '#A2421F',
+        sage: '#5E6B4F',
       },
       fontFamily: {
-        'calibre': ['Calibre', 'Inter', 'San Francisco', 'SF Pro Text', '-apple-system', 'system-ui', 'sans-serif'],
-        'sf-mono': ['SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', 'monospace'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        sans: ['Inter', '-apple-system', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'slide-down': 'slideDown 0.5s ease-out',
+        marquee: 'marquee 40s linear infinite',
+        'spin-slow': 'spin 18s linear infinite',
+        blink: 'blink 1.4s ease-in-out infinite',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        slideDown: {
-          '0%': { transform: 'translateY(-20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.25' },
         },
       },
     },

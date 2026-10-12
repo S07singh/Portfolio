@@ -1,258 +1,94 @@
-import React from "react";
-import { motion } from "framer-motion";
-import {
-  FaCode,
-  FaProjectDiagram,
-  FaBriefcase,
-  FaTrophy,
-} from "react-icons/fa";
+import React, { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { journey } from "../data/journey";
 
+// journey dates are "M/YYYY"
+const toKey = (date) => {
+  const [m, y] = date.split("/").map(Number);
+  return y * 100 + m;
+};
+const monthName = (date) =>
+  new Date(Number(date.split("/")[1]), Number(date.split("/")[0]) - 1).toLocaleString("en", { month: "short" });
+
 const JourneyPage = () => {
-  const getIcon = (type) => {
-    switch (type) {
-      case "Skill":
-        return <FaCode className="text-green-accent" />;
-      case "Project":
-        return <FaProjectDiagram className="text-green-accent" />;
-      case "Internship":
-        return <FaBriefcase className="text-green-accent" />;
-      case "Milestone":
-        return <FaTrophy className="text-green-accent" />;
-      default:
-        return <FaCode className="text-green-accent" />;
-    }
-  };
+  const listRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: listRef, offset: ["start 70%", "end 60%"] });
+  const lineScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const leftItemVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const rightItemVariants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
-  };
+  const sorted = [...journey].sort((a, b) => toKey(b.date) - toKey(a.date));
+  const years = sorted.reduce((acc, item) => {
+    const year = item.date.split("/")[1];
+    (acc[year] ||= []).push(item);
+    return acc;
+  }, {});
+  const yearKeys = Object.keys(years).sort((a, b) => b - a);
 
   return (
-    <div className="min-h-screen bg-dark-bg pt-24 pb-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen pb-24 pt-36">
+      <div className="container-x">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="border-b border-ink pb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-light-slate mb-4">
-            My Learning Journey
+          <p className="eyebrow mb-6">Changelog · {journey.length} entries</p>
+          <h1 className="display text-7xl sm:text-8xl md:text-9xl">
+            The <span className="italic text-accent">journey</span>
           </h1>
-          <div className="w-24 h-1 bg-green-accent mx-auto mb-6"></div>
-          <p className="text-lg text-slate max-w-2xl mx-auto">
-            A timeline showcasing my evolution from programming fundamentals to
-            advanced AI development, highlighting key milestones and
-            technologies learned along the way.
+          <p className="mt-6 max-w-2xl text-lg text-ink-soft">
+            From C and C++ in 2024 to agentic AI today: a log of what I learned and when.
           </p>
         </motion.div>
 
-        {/* Timeline */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="relative"
-        >
-          {/* Center Timeline Line - Desktop */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-slate/20 hidden lg:block"></div>
+        <div ref={listRef} className="relative mt-16">
+          <div className="absolute bottom-0 left-[7px] top-0 w-px bg-line md:left-[calc(25%+7px)]" />
+          <motion.div
+            className="absolute bottom-0 left-[7px] top-0 w-px origin-top bg-accent md:left-[calc(25%+7px)]"
+            style={{ scaleY: lineScale }}
+          />
 
-          {/* Mobile Timeline Line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate/20 lg:hidden"></div>
-
-          {journey.map((item, index) => {
-            const isLeft = index % 2 === 0;
-
-            return (
-              <motion.div
-                key={item.id}
-                variants={isLeft ? leftItemVariants : rightItemVariants}
-                className="relative mb-12 lg:mb-16"
-              >
-                {/* Desktop Layout - 2 column grid */}
-                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8 items-start">
-                  {/* Left Column */}
-                  <div className="lg:pr-8">
-                    {isLeft && (
-                      <div className="text-right">
-                        <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          className="bg-dark-secondary border border-slate/20 rounded-lg p-6 hover:border-green-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-accent/10"
-                        >
-                          {/* Date & Type */}
-                          <div className="flex flex-wrap items-center gap-3 mb-3 justify-end">
-                            <span className="text-green-accent font-bold text-lg">
-                              {item.date}
-                            </span>
-                            <div className="flex items-center gap-2 px-3 py-1 bg-dark-bg border border-green-accent/30 rounded-full">
-                              {getIcon(item.type)}
-                              <span className="text-slate text-sm">
-                                {item.type}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Title */}
-                          <h3 className="text-xl font-bold text-light-slate mb-3">
-                            {item.title}
-                          </h3>
-
-                          {/* Technologies */}
-                          {item.technologies &&
-                            item.technologies.length > 0 && (
-                              <div className="flex flex-wrap gap-2 justify-end">
-                                {item.technologies.map((tech, techIndex) => (
-                                  <span
-                                    key={techIndex}
-                                    className="px-3 py-1 bg-dark-bg text-green-accent text-sm rounded border border-green-accent/30"
-                                  >
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                        </motion.div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right Column */}
-                  <div className="lg:pl-8">
-                    {!isLeft && (
-                      <div className="text-left">
-                        <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          className="bg-dark-secondary border border-slate/20 rounded-lg p-6 hover:border-green-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-accent/10"
-                        >
-                          {/* Date & Type */}
-                          <div className="flex flex-wrap items-center gap-3 mb-3">
-                            <span className="text-green-accent font-bold text-lg">
-                              {item.date}
-                            </span>
-                            <div className="flex items-center gap-2 px-3 py-1 bg-dark-bg border border-green-accent/30 rounded-full">
-                              {getIcon(item.type)}
-                              <span className="text-slate text-sm">
-                                {item.type}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Title */}
-                          <h3 className="text-xl font-bold text-light-slate mb-3">
-                            {item.title}
-                          </h3>
-
-                          {/* Technologies */}
-                          {item.technologies &&
-                            item.technologies.length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {item.technologies.map((tech, techIndex) => (
-                                  <span
-                                    key={techIndex}
-                                    className="px-3 py-1 bg-dark-bg text-green-accent text-sm rounded border border-green-accent/30"
-                                  >
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                        </motion.div>
-                      </div>
-                    )}
-                  </div>
+          {yearKeys.map((year) => (
+            <div key={year} className="relative grid grid-cols-1 md:grid-cols-4">
+              <div className="mb-6 pl-10 md:mb-0 md:pl-0">
+                <div className="md:sticky md:top-32">
+                  <span className="display text-6xl text-ink/80 md:text-8xl">{year}</span>
                 </div>
+              </div>
 
-                {/* Center Timeline Dot - Desktop */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 top-8 hidden lg:flex">
-                  <div className="w-7 h-7 bg-dark-bg border-4 border-green-accent rounded-full flex items-center justify-center z-10">
-                    <div className="w-2 h-2 bg-green-accent rounded-full"></div>
-                  </div>
-                </div>
-
-                {/* Mobile Timeline */}
-                <div className="lg:hidden relative pl-20">
-                  {/* Mobile Timeline Dot */}
-                  <div className="absolute left-5 top-2 w-7 h-7 bg-dark-bg border-4 border-green-accent rounded-full flex items-center justify-center z-10">
-                    <div className="w-2 h-2 bg-green-accent rounded-full"></div>
-                  </div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-dark-secondary border border-slate/20 rounded-lg p-6 hover:border-green-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-accent/10"
+              <ol className="pb-16 md:col-span-3">
+                {years[year].map((item, i) => (
+                  <motion.li
+                    key={item.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: i * 0.05 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    className="group relative pb-10 pl-10"
                   >
-                    {/* Date & Type */}
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <span className="text-green-accent font-bold text-lg">
-                        {item.date}
-                      </span>
-                      <div className="flex items-center gap-2 px-3 py-1 bg-dark-bg border border-green-accent/30 rounded-full">
-                        {getIcon(item.type)}
-                        <span className="text-slate text-sm">{item.type}</span>
+                    <span className="absolute left-0 top-2 h-[15px] w-[15px] rounded-full border-2 border-cream bg-ink ring-1 ring-line transition-colors duration-300 group-hover:bg-accent" />
+                    <div className="rounded-2xl border border-transparent p-0 transition-all duration-500 md:-ml-4 md:p-4 md:group-hover:border-line md:group-hover:bg-paper">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="eyebrow">{monthName(item.date)} {year}</span>
+                        <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${
+                          item.type.toLowerCase() === "milestone" ? "bg-accent text-cream" : "bg-cream-2 text-ink-soft"
+                        }`}>
+                          {item.type}
+                        </span>
                       </div>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-xl font-bold text-light-slate mb-3">
-                      {item.title}
-                    </h3>
-
-                    {/* Technologies */}
-                    {item.technologies && item.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {item.technologies.map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="px-3 py-1 bg-dark-bg text-green-accent text-sm rounded border border-green-accent/30"
-                          >
-                            {tech}
-                          </span>
+                      <h2 className="mt-2 font-serif text-3xl leading-tight">{item.title}</h2>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {item.technologies.map((t) => (
+                          <span key={t} className="chip">{t}</span>
                         ))}
                       </div>
-                    )}
-                  </motion.div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <p className="text-slate text-lg">The journey continues... 🚀</p>
-        </motion.div>
+                    </div>
+                  </motion.li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
