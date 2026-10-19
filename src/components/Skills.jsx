@@ -110,7 +110,7 @@ const Skills = () => {
       </div>
 
       <div className="container-x">
-        <SectionHeading index="02" label="Toolkit" title={<>The <span className="italic text-accent">stack</span> I reach for.</>}>
+        <SectionHeading index="03" label="Toolkit" title={<>The <span className="italic text-accent">stack</span> I reach for.</>}>
           Pick a discipline to see the tools behind it.
         </SectionHeading>
 

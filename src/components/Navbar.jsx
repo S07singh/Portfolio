@@ -32,14 +32,16 @@ const Navbar = () => {
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  const goToContact = (e) => {
+  // Scroll to a home-page section, navigating home first if needed
+  const goToSection = (id) => (e) => {
     e.preventDefault()
     setIsOpen(false)
+    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
     if (location.pathname === '/') {
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+      scroll()
     } else {
       navigate('/')
-      setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 350)
+      setTimeout(scroll, 350)
     }
   }
 
@@ -71,6 +73,13 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
+            <a
+              href="/#experience"
+              onClick={goToSection('experience')}
+              className="rounded-full px-4 py-1.5 text-sm text-ink-soft transition-colors duration-300 hover:text-ink"
+            >
+              Experience
+            </a>
             {navItems.map((item) => (
               <NavLink
                 key={item.name}
@@ -98,7 +107,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <a href="/#contact" onClick={goToContact} className="btn-ink hidden !py-2 !px-5 md:inline-flex">
+            <a href="/#contact" onClick={goToSection('contact')} className="btn-ink hidden !py-2 !px-5 md:inline-flex">
               Let&apos;s talk
             </a>
             <button
@@ -143,17 +152,20 @@ const Navbar = () => {
                   </NavLink>
                 </motion.div>
               ))}
-              <motion.a
-                href="/#contact"
-                onClick={goToContact}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="display flex items-baseline gap-4 py-1 text-6xl"
-              >
-                <span className="eyebrow">06</span>
-                Contact
-              </motion.a>
+              {[['experience', 'Experience'], ['contact', 'Contact']].map(([id, name], i) => (
+                <motion.a
+                  key={id}
+                  href={`/#${id}`}
+                  onClick={goToSection(id)}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.06 }}
+                  className="display flex items-baseline gap-4 py-1 text-6xl"
+                >
+                  <span className="eyebrow">0{navItems.length + 2 + i}</span>
+                  {name}
+                </motion.a>
+              ))}
             </div>
             <div className="flex gap-6">
               {socialLinks.map((s) => (

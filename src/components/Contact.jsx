@@ -69,7 +69,7 @@ const Contact = () => {
 
       <div className="container-x relative">
         <div className="mb-6 flex items-center gap-4">
-          <span className="eyebrow !text-accent">(05)</span>
+          <span className="eyebrow !text-accent">(06)</span>
           <span className="eyebrow !text-cream/60">Contact</span>
           <span className="h-px flex-1 bg-cream/15" />
         </div>

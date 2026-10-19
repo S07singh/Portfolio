@@ -76,7 +76,7 @@ const Hero = () => {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sage opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-sage" />
             </span>
-            Open to AI / ML roles &amp; internships
+            AI Engineer Intern @ Acuron AI
           </span>
           <span className="eyebrow hidden sm:block">
             {site.location} · <span className="tabular-nums text-ink">{time}</span> IST

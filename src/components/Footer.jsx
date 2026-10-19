@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="col-span-2">
             <p className="eyebrow mb-4">Currently</p>
             <p className="max-w-sm font-serif text-2xl leading-snug">
-              Building LLM agents and vision systems, and open to AI / ML engineering roles.
+              AI Engineer Intern at Acuron AI, building voice &amp; chat agents. Open to AI / ML engineering roles.
             </p>
           </div>
           <div>

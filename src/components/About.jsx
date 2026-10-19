@@ -3,6 +3,7 @@ import { motion, useInView, animate } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { projects } from "../data/projects";
 import { certificates } from "../data/certificates";
+import { experience } from "../data/experience";
 
 const focusAreas = [
   {
@@ -43,7 +44,7 @@ const About = () => {
     { value: projects.length, suffix: "", label: "Projects built" },
     { value: projects.filter((p) => p.tags.some((t) => ["AI", "Machine Learning", "Computer Vision"].includes(t))).length, suffix: "", label: "AI / ML projects" },
     { value: certificates.length, suffix: "", label: "Certifications" },
-    { value: 30, suffix: "+", label: "Tools in the kit" },
+    { value: experience.length, suffix: "", label: "AI internships" },
   ];
 
   return (

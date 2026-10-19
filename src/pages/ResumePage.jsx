@@ -4,8 +4,9 @@ import { FaArrowDown, FaArrowRight } from "react-icons/fa";
 import { site, socialLinks } from "../data/site";
 
 const facts = [
-  ["Role", "AI / ML Engineer"],
-  ["Education", "B.E. AI & Data Science, DYPIEMR"],
+  ["Role", "AI Engineer Intern, Acuron AI"],
+  ["Before", "AI Intern, TANSU AI"],
+  ["Education", "B.E. AI & Data Science, SPPU · CGPA 9.01"],
   ["Focus", "LLM agents · RAG · Computer vision · ML"],
   ["Location", `${site.location} · open to remote`],
 ];

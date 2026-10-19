@@ -26,7 +26,7 @@ const Projects = () => {
   return (
     <section id="projects" className="relative py-24 md:py-36">
       <div className="container-x">
-        <SectionHeading index="03" label="Selected work" title={<>Things I&apos;ve <span className="italic text-accent">built</span>.</>}>
+        <SectionHeading index="04" label="Selected work" title={<>Things I&apos;ve <span className="italic text-accent">built</span>.</>}>
           A few projects across LLM agents, computer vision and machine learning. Open one for the full story.
         </SectionHeading>
 

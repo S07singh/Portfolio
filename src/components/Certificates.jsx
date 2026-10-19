@@ -14,7 +14,7 @@ const Certificates = () => {
     <section id="certificates" className="relative border-t border-line bg-cream-2/60 py-24 md:py-36">
       <div className="container-x">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <SectionHeading index="04" label="Credentials" title={<>Always <span className="italic text-accent">learning</span>.</>} className="!mb-0" />
+          <SectionHeading index="05" label="Credentials" title={<>Always <span className="italic text-accent">learning</span>.</>} className="!mb-0" />
           <Link to="/certificates" className="link-underline eyebrow inline-flex items-center gap-2 self-start !text-ink md:self-end">
             All certificates <FaArrowRight />
           </Link>
